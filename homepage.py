@@ -388,18 +388,34 @@ def load_custom_model(model_path):
     return model
 
 # 이미지 분석
-def analyze_image_custom_model(model, image):
-    image = preprocess_input(np.array(image.resize((224, 224))))
+def analyze_image_custom_model(model, uploaded_image):
+    pil_image = Image.open(uploaded_image)
+    target_size = (224, 224)  # Change this to match your model's input size
+    pil_image_resized = pil_image.resize(target_size)
+    
+    image = preprocess_input(np.array(pil_image_resized))
     image = np.expand_dims(image, axis=0)
-    predictions = model.predict(image)
-    decoded_predictions = tf.keras.applications.resnet50.decode_predictions(predictions)[0]
-    top_prediction = decoded_predictions[0]
-    return top_prediction[1], top_prediction[2]
+    
+    # Make prediction using the model
+    prediction = model.predict(image)
+    
+    # Get the class index with highest probability
+    class_index = np.argmax(prediction)
+    
+    # Get class names
+    class_names = ["0", "1"]  # Replace with actual class names
+    top_prediction = class_names[class_index]
+    
+    # Get the highest probability
+    confidence = prediction[0][class_index]
+    
+    return top_prediction, confidence
+
 
 def resize_image(image, size):
     img = Image.open(image)
     img_resized = img.resize(size)
-    return img
+    return img_resized
 
 def clear_session_state():
     st.session_state.clear()
