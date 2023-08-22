@@ -1,0 +1,6 @@
+flask==2.0.1
+pandas==1.3.3
+mysql-connector-python==8.0.27
+streamlit==1.25.0
+requests==2.26.0
+Pillow==8.4.0
